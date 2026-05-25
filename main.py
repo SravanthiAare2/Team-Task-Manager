@@ -133,13 +133,14 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if not email or not password:
-            flash("Fill all fields")
+        try:
+            user = User.query.filter_by(email=email).first()
+        except Exception as e:
+            print("DB ERROR:", e)
+            flash("Database error")
             return redirect('/login')
 
-        user = User.query.filter_by(email=email).first()
-
-        if user is None:
+        if not user:
             flash("User not found")
             return redirect('/login')
 
@@ -148,15 +149,9 @@ def login():
             return redirect('/login')
 
         login_user(user)
-
         return redirect('/dashboard')
 
     return render_template('login.html')
-
-@login_manager.unauthorized_handler
-def unauthorized():
-    flash("Please login first")
-    return redirect('/login')
 
 
 # ================= MEMBER DASHBOARD =================
