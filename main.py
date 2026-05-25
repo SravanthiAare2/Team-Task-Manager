@@ -15,7 +15,10 @@ import os
 app = Flask(__name__)
 
 # ================= CONFIG =================
-app.config['SECRET_KEY'] = 'team-task-manager-secret'
+app.config['SECRET_KEY'] = os.environ.get(
+    "SECRET_KEY",
+    os.urandom(24).hex()
+)
 
 import os
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
